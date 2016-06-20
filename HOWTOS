@@ -1,0 +1,104 @@
+#Connecting
+    #1
+    Wireless: wipy-wlnan
+    psswd: www.wipy.io
+
+    telnet 192.168.1.1
+    user: micro
+    passwd: python
+    
+    
+    #2 
+    ftp 192.168.1.1
+    
+    user: micro
+    passwd: python
+    
+    ftp> passive
+    
+    
+    #3  --Doesn't work for me
+    screen /dev/ttyUSB0 115200
+    
+
+#Boot Modes
+    
+    #Safe booting: Connect GP28 to 3V3  
+    Niether boot.py or main.py are run
+        - <3sec: LATEST firmware selected
+        - 2-3sec: PREVIOUS firemware
+        - >3sec: FACTORY firmware
+
+#heartbeat:
+    - Default: Flash once every 4 sec
+        > Turn off:
+            >>> import wipy
+            >>> wipy.heartbeat(False) 
+    - Rapid flashing: main.py has an error - use REPL to debug
+    - Solid red: hard fault, only recovery is a hard reset switch
+
+#Sleep Modes
+    - machine.idle(): ~12mA (in WLAN STA mode), any hardware interrupt  works
+    - machine.sleep(): 950uA (in WLAN STA mode). Wake sources are Pin, RTC and WLAN
+    - machine.deepsleep(): ~5uA. Wake sources are Pin and RTC.
+
+#RESET:
+    - Soft reset: CTRL-D
+    - Hard reset: Button or
+            >>> import machine
+            >>> machine.reset()
+
+
+------------------
+#Change user name and password
+
+
+#Upgrade Firmware:
+ - Check your current version:
+        >>> import os
+        >>> os.uname().release
+
+ - Download latest firmware  (Binaries.zip): https://github.com/wipy/wipy/releases
+    -- Note bootloader.bin is not needed
+ - Upload the mcuimg.bin file to: /flash/sys/mcuimg.bin via FTP
+    --Note: You won’t see the file being stored inside /flash/sys/ because it’s actually saved bypassing the user file system, so it ends up inside the internal hidden file system, but rest assured that it was successfully transferred, and it has been signed with a MD5 checksum to verify its integrity. 
+ - Hard reset the WiPy by pressing the switch on the board
+
+
+#Connect via USB-UART on expansion board:
+
+cp UART.py to /flash/boot.py
+sudo picocom -b 115200 /dev/ttyUSB1
+
+
+
+
+#Setup WLAN:
+Copy WLAN_STATION.py as boot.py onto /flash/boot.py
+
+
+#BLYNK 101
+Get the Blynk library and put it in /flash/lib/ via FTP.
+Get the Blynk examples, edit the network settings, and afterwards upload them to /flash/lib/ via FTP as well.
+Follow the instructions on each example to setup the Blynk dashboard on your smartphone or tablet.
+Give it a try, for instance:
+
+>>> execfile('01_simple.py')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#Factory reset the file system:
+>>> import os
+>>> os.mkfs('/flash')
