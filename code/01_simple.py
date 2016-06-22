@@ -24,25 +24,10 @@ Don't forget to change WIFI_SSID, WIFI_AUTH and BLYNK_AUTH ;)
 import BlynkLib
 from network import WLAN
 
-from machine import UART
-import os
-uart = UART(0, baudrate=115200)
-os.dupterm(uart)
-
-
-
-
-WIFI_SSID  = 'muizenberg'
-WIFI_AUTH  = (WLAN.WPA2, '7yeb623e')
 BLYNK_AUTH = '00b0a417efa24ee6a99507c78c986063'
 
-# connect to WiFi
-wifi = WLAN(mode=WLAN.STA)
-wifi.connect(WIFI_SSID, auth=WIFI_AUTH, timeout=5000)
-while not wifi.isconnected():
-    pass
-
-print('IP address:', wifi.ifconfig()[0])
+# show IP address (assume WiPy already booted with wifi in station mode)
+print('IP address:', WLAN().ifconfig()[0])
 
 # initialize Blynk
 blynk = BlynkLib.Blynk(BLYNK_AUTH)
